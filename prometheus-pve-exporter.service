@@ -1,12 +1,24 @@
 [Unit]
 Description=Prometheus Proxmox VE Exporter
-After=network.target
+Documentation=https://github.com/bossjones/prometheus-pve-exporter
+After=local-fs.target network-online.target network.target
+Wants=local-fs.target network-online.target network.target
 
 [Service]
 Type=simple
+EnvironmentFile=-/etc/default/%N
+EnvironmentFile=-/etc/sysconfig/%N
+EnvironmentFile=/etc/prometheus/prometheus-pve-exporter.env
+KillMode=process
+Delegate=yes
+LimitNPROC=infinity
+LimitCORE=infinity
+TasksMax=infinity
+TimeoutStartSec=0
+Restart=always
+RestartSec=5s
 User=prometheus
 Group=prometheus
-EnvironmentFile=/etc/prometheus/prometheus-pve-exporter.env
 
 # Direct execution without shell script
 ExecStart=/usr/local/bin/uvx run prometheus-pve-exporter \
@@ -17,16 +29,7 @@ ExecStart=/usr/local/bin/uvx run prometheus-pve-exporter \
     --collector.cluster \
     --collector.resources
 
-# Restart configuration
-Restart=always
-RestartSec=10
-
-# # Security settings
-# NoNewPrivileges=true
-# ProtectSystem=strict
-# ProtectHome=true
-# ReadWritePaths=/var/log
-# PrivateTmp=true
+ExecStartPre=-/usr/sbin/iptables -A INPUT -p tcp --dport 9221 -m state --state NEW -j ACCEPT
 
 [Install]
 WantedBy=multi-user.target
