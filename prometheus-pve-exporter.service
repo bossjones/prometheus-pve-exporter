@@ -21,12 +21,12 @@ ExecStart=/usr/local/bin/uvx run prometheus-pve-exporter \
 Restart=always
 RestartSec=10
 
-# Security settings
-NoNewPrivileges=true
-ProtectSystem=strict
-ProtectHome=true
-ReadWritePaths=/var/log
-PrivateTmp=true
+# # Security settings
+# NoNewPrivileges=true
+# ProtectSystem=strict
+# ProtectHome=true
+# ReadWritePaths=/var/log
+# PrivateTmp=true
 
 [Install]
 WantedBy=multi-user.target
