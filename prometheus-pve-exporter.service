@@ -1,0 +1,32 @@
+[Unit]
+Description=Prometheus Proxmox VE Exporter
+After=network.target
+
+[Service]
+Type=simple
+User=prometheus
+Group=prometheus
+EnvironmentFile=/etc/prometheus/prometheus-pve-exporter.env
+
+# Direct execution without shell script
+ExecStart=/usr/local/bin/uvx run prometheus-pve-exporter \
+    --web.listen-address=:9221 \
+    --collector.status \
+    --collector.version \
+    --collector.node \
+    --collector.cluster \
+    --collector.resources
+
+# Restart configuration
+Restart=always
+RestartSec=10
+
+# Security settings
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/log
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
