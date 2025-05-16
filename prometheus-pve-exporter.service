@@ -22,7 +22,6 @@ Group=prometheus
 
 # Direct execution without shell script
 ExecStart=/usr/local/bin/uvx run prometheus-pve-exporter \
-    --web.listen-address=:9221 \
     --collector.status \
     --collector.version \
     --collector.node \
